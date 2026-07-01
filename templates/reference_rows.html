@@ -1,0 +1,7 @@
+{% import "partials/reference_macros.html" as ref %}
+{% if error %}
+<tr class="row-error"><td colspan="{{ columns | length + 1 }}">{{ error }}</td></tr>
+{% endif %}
+{% for item in items %}
+{{ ref::row_view(entity=entity, item=item, columns=columns) }}
+{% endfor %}

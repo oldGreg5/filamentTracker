@@ -1,0 +1,10 @@
+services:
+  filament-tracker:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+    environment:
+      - DATABASE_URL=sqlite:///data/db.sqlite
+      - IMAGE_DIR=/data/images

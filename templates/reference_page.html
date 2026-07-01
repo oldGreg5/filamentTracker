@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% import "partials/reference_macros.html" as ref %}
+{% block content %}
+<h1>{{ title }}</h1>
+
+{{ ref::add_form(entity=entity, singular=singular, columns=columns) }}
+
+<table class="reference-table">
+  <thead>
+    <tr>{{ ref::columns_head(columns=columns) }}</tr>
+  </thead>
+  <tbody id="rows">
+    {% for item in items %}
+    {{ ref::row_view(entity=entity, item=item, columns=columns) }}
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

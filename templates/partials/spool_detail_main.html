@@ -1,0 +1,48 @@
+<div class="detail-grid">
+  <div class="detail-images">
+    {% for img in images %}
+    <img src="/images/{{ img.path }}" alt="{{ spool.brand_name }} spool photo">
+    {% endfor %}
+    {% if images | length == 0 %}<p class="empty-notice">No photos yet.</p>{% endif %}
+  </div>
+
+  <div class="detail-stats">
+    <p><span class="swatch" style="background:{{ spool.colour_hex | default(value='#ccc') }}"></span> {{ spool.colour_name }}</p>
+    <p>Nominal weight: {{ spool.nominal_weight_g }}g</p>
+    {% if spool.percent_remaining %}
+    <div class="progress-bar large"><div class="progress-fill" style="width:{{ (spool.percent_remaining * 100) | round }}%"></div></div>
+    <p>{{ (spool.percent_remaining * 100) | round }}% remaining ({{ spool.remaining_g | round }}g)</p>
+    {% else %}
+    <p>No weight logged yet.</p>
+    {% endif %}
+    {% if spool.product_url %}<p><a href="{{ spool.product_url }}" target="_blank" rel="noopener">Product link</a></p>{% endif %}
+    {% if spool.purchase_date %}<p>Purchased: {{ spool.purchase_date }}</p>{% endif %}
+    {% if spool.notes %}<p>Notes: {{ spool.notes }}</p>{% endif %}
+  </div>
+</div>
+
+<form hx-post="/spools/{{ spool.id }}/weigh" hx-target="#spool-detail" hx-swap="innerHTML" class="weigh-form">
+  <label>New gross weight (g) &mdash; spool + remaining filament, from your scale
+    <input type="number" step="any" name="gross_weight_g" required>
+  </label>
+  <button type="submit">Log weight</button>
+</form>
+
+<h2>Weight history</h2>
+<table class="reference-table">
+  <thead>
+    <tr><th>Date</th><th>Gross (g)</th><th>Remaining (g)</th></tr>
+  </thead>
+  <tbody>
+    {% for w in history %}
+    <tr>
+      <td data-label="Date">{{ w.measured_at }}</td>
+      <td data-label="Gross (g)">{{ w.gross_weight_g }}</td>
+      <td data-label="Remaining (g)">{{ w.remaining_g | round }}</td>
+    </tr>
+    {% endfor %}
+    {% if history | length == 0 %}
+    <tr><td colspan="3" class="empty-row">No weight logged yet.</td></tr>
+    {% endif %}
+  </tbody>
+</table>
