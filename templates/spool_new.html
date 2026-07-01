@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Add Spool</h1>
+
+{% if brands | length == 0 or materials | length == 0 or colours | length == 0 %}
+<p class="empty-notice">
+  Before adding a spool you need at least one entry in each reference list:
+</p>
+<ul>
+  {% if brands | length == 0 %}<li>No brands yet — <a href="/brands">add one on the Brands tab</a>.</li>{% endif %}
+  {% if materials | length == 0 %}<li>No materials yet — <a href="/materials">add one on the Materials tab</a>.</li>{% endif %}
+  {% if colours | length == 0 %}<li>No colours yet — <a href="/colours">add one on the Colours tab</a>.</li>{% endif %}
+</ul>
+{% else %}
+<form method="post" action="/spools" enctype="multipart/form-data" class="wizard-form">
+
+  <fieldset>
+    <legend>1. Brand</legend>
+    <select name="brand_id" required>
+      <option value="" disabled selected>Select a brand&hellip;</option>
+      {% for b in brands %}<option value="{{ b.id }}">{{ b.name }}</option>{% endfor %}
+    </select>
+  </fieldset>
+
+  <fieldset>
+    <legend>2. Material</legend>
+    <select name="material_id" required>
+      <option value="" disabled selected>Select a material&hellip;</option>
+      {% for m in materials %}<option value="{{ m.id }}">{{ m.name }}</option>{% endfor %}
+    </select>
+  </fieldset>
+
+  <fieldset class="colour-picker">
+    <legend>3. Colour</legend>
+    {% for c in colours %}
+    <label class="colour-option">
+      <input type="radio" name="colour_id" value="{{ c.id }}" required>
+      <span class="swatch" style="background:{{ c.hex | default(value='#ccc') }}"></span>
+      {{ c.name }}
+    </label>
+    {% endfor %}
+  </fieldset>
+
+  <fieldset class="weight-toggle">
+    <legend>4. Weight</legend>
+    <label><input type="radio" name="weight_mode" value="new" checked> Brand new / unopened</label>
+    <label><input type="radio" name="weight_mode" value="opened"> Already opened</label>
+
+    <label>Nominal weight (g)
+      <input type="number" step="any" name="nominal_weight_g" value="1000" required>
+    </label>
+
+    <div class="opened-only">
+      <label>Current gross weight (g) — spool + remaining filament, from your scale
+        <input type="number" step="any" name="gross_weight_g">
+      </label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>5. Pictures</legend>
+    <input type="file" name="images" accept="image/*" capture="environment" multiple>
+  </fieldset>
+
+  <fieldset>
+    <legend>6. Product link + notes</legend>
+    <label>Product URL <input type="url" name="product_url"></label>
+    <label>Purchase date <input type="date" name="purchase_date"></label>
+    <label>Notes <textarea name="notes"></textarea></label>
+  </fieldset>
+
+  <button type="submit">Add Spool</button>
+</form>
+{% endif %}
+{% endblock %}

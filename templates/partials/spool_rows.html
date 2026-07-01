@@ -1,0 +1,27 @@
+{% for s in spools %}
+<tr>
+  <td class="thumb-cell">
+    <a href="/spools/{{ s.id }}">
+    {% if s.thumbnail_path %}
+    <img class="thumb" src="/images/{{ s.thumbnail_path }}" alt="">
+    {% else %}
+    <span class="thumb placeholder"></span>
+    {% endif %}
+    </a>
+  </td>
+  <td data-label="Brand"><a href="/spools/{{ s.id }}">{{ s.brand_name }}</a></td>
+  <td data-label="Material">{{ s.material_name }}</td>
+  <td data-label="Colour"><span class="swatch" style="background:{{ s.colour_hex | default(value='#ccc') }}"></span> {{ s.colour_name }}</td>
+  <td data-label="Remaining %">
+    {% if s.percent_remaining %}
+    <div class="progress-bar"><div class="progress-fill" style="width:{{ (s.percent_remaining * 100) | round }}%"></div></div>
+    {{ (s.percent_remaining * 100) | round }}%
+    {% else %}—{% endif %}
+  </td>
+  <td data-label="Remaining (g)">{% if s.remaining_g %}{{ s.remaining_g | round }}g{% else %}—{% endif %}</td>
+  <td data-label="Purchased">{{ s.purchase_date | default(value="—") }}</td>
+</tr>
+{% endfor %}
+{% if spools | length == 0 %}
+<tr><td colspan="7" class="empty-row">No spools match these filters.</td></tr>
+{% endif %}
