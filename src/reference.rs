@@ -32,7 +32,11 @@ pub struct ReferenceConfig {
 }
 
 async fn fetch_rows(pool: &SqlitePool, config: &ReferenceConfig) -> Vec<Map<String, Value>> {
-    let sql = format!("SELECT * FROM {} ORDER BY name", config.table);
+    let sql = format!(
+        "SELECT t.*, (SELECT COUNT(*) FROM spools s WHERE s.{} = t.id) AS spool_count
+         FROM {} t ORDER BY t.name",
+        config.spool_fk_column, config.table
+    );
     let rows = sqlx::query(&sql).fetch_all(pool).await.expect("query reference rows");
     rows.into_iter().map(|row| row_to_map(&row, config)).collect()
 }
@@ -50,11 +54,17 @@ fn row_to_map(row: &sqlx::sqlite::SqliteRow, config: &ReferenceConfig) -> Map<St
             map.insert(col.key.into(), json!(v));
         }
     }
+    let spool_count: i64 = row.try_get("spool_count").unwrap_or(0);
+    map.insert("spool_count".into(), json!(spool_count));
     map
 }
 
 async fn fetch_row(pool: &SqlitePool, config: &ReferenceConfig, id: i64) -> Option<Map<String, Value>> {
-    let sql = format!("SELECT * FROM {} WHERE id = ?", config.table);
+    let sql = format!(
+        "SELECT t.*, (SELECT COUNT(*) FROM spools s WHERE s.{} = t.id) AS spool_count
+         FROM {} t WHERE t.id = ?",
+        config.spool_fk_column, config.table
+    );
     let row = sqlx::query(&sql).bind(id).fetch_optional(pool).await.expect("query reference row");
     row.map(|r| row_to_map(&r, config))
 }
@@ -64,6 +74,8 @@ fn base_context(config: &ReferenceConfig) -> Context {
     ctx.insert("entity", config.entity);
     ctx.insert("singular", config.singular);
     ctx.insert("columns", config.columns);
+    // "brand_id" -> "brand", matching the /spools?brand=&material=&colour= filter params.
+    ctx.insert("filter_param", config.spool_fk_column.trim_end_matches("_id"));
     ctx
 }
 

@@ -2,7 +2,7 @@
 {% for col in columns %}<th>{{ col.label }}</th>{% endfor %}<th>Actions</th>
 {% endmacro columns_head %}
 
-{% macro row_view(entity, item, columns) %}
+{% macro row_view(entity, item, columns, filter_param) %}
 <tr id="row-{{ item.id }}">
   {% for col in columns %}
   <td>
@@ -16,6 +16,8 @@
   <td class="actions">
     <button class="btn btn-ghost btn-sm" hx-get="/{{ entity }}/{{ item.id }}/edit" hx-target="#row-{{ item.id }}" hx-swap="outerHTML">Edit</button>
     <button class="btn btn-danger-ghost btn-sm" hx-delete="/{{ entity }}/{{ item.id }}" hx-target="#rows" hx-swap="innerHTML" hx-confirm="Delete this entry?">Delete</button>
+    <a href="/spools?{{ filter_param }}={{ item.id }}" class="btn btn-secondary btn-sm">Show</a>
+    <span class="usage-count" title="Spools using this">{{ item.spool_count | default(value=0) }}</span>
   </td>
 </tr>
 {% endmacro row_view %}
