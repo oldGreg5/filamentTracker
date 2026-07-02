@@ -33,10 +33,17 @@ async fn main() {
 
     let tera = Tera::new("templates/**/*.html").expect("failed to load templates");
 
+    let asset_version = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .expect("system clock before epoch")
+        .as_secs()
+        .to_string();
+
     let state = AppState {
         pool,
         tera: Arc::new(RwLock::new(tera)),
         image_dir: PathBuf::from(&config.image_dir),
+        asset_version,
     };
 
     let app = Router::new()
@@ -46,9 +53,16 @@ async fn main() {
             get(handlers::spools::list).post(handlers::spools::create),
         )
         .route("/spools/new", get(handlers::spools::new_form))
-        .layer(DefaultBodyLimit::max(25 * 1024 * 1024))
-        .route("/spools/:id", get(handlers::spools::detail))
+        .layer(DefaultBodyLimit::max(75 * 1024 * 1024))
+        .route(
+            "/spools/:id",
+            get(handlers::spools::detail).delete(handlers::spools::delete),
+        )
         .route("/spools/:id/weigh", axum::routing::post(handlers::spools::weigh))
+        .route(
+            "/spools/:id/edit",
+            get(handlers::spools::edit_form).post(handlers::spools::update),
+        )
         .route(
             "/brands",
             get(handlers::brands::page).post(handlers::brands::create),

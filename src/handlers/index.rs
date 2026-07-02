@@ -24,6 +24,7 @@ pub async fn index(State(state): State<AppState>) -> Result<impl IntoResponse, A
     ctx.insert("material_count", &material_count);
     ctx.insert("colour_count", &colour_count);
     ctx.insert("spool_count", &spool_count);
+    ctx.insert("active_nav", "home");
 
     let body = state.render("index.html", &ctx).await?;
     Ok(Html(body))

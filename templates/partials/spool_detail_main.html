@@ -3,32 +3,50 @@
     {% for img in images %}
     <img src="/images/{{ img.path }}" alt="{{ spool.brand_name }} spool photo">
     {% endfor %}
-    {% if images | length == 0 %}<p class="empty-notice">No photos yet.</p>{% endif %}
+    {% if images | length == 0 %}<div class="empty-photo">No photos yet</div>{% endif %}
   </div>
 
-  <div class="detail-stats">
-    <p><span class="swatch" style="background:{{ spool.colour_hex | default(value='#ccc') }}"></span> {{ spool.colour_name }}</p>
-    <p>Nominal weight: {{ spool.nominal_weight_g }}g</p>
+  <div class="detail-stats card">
+    <p class="detail-colour"><span class="swatch" style="background:{{ spool.colour_hex | default(value='#ccc') }}"></span> {{ spool.colour_name }}</p>
+    <p class="detail-nominal">Nominal weight: <strong>{{ spool.nominal_weight_g }}g</strong> <span class="muted">({{ spool.tare_weight_g | round }}g empty spool)</span></p>
     {% if spool.percent_remaining %}
-    <div class="progress-bar large"><div class="progress-fill" style="width:{{ (spool.percent_remaining * 100) | round }}%"></div></div>
-    <p>{{ (spool.percent_remaining * 100) | round }}% remaining ({{ spool.remaining_g | round }}g)</p>
+    {% set pct = (spool.percent_remaining * 100) | round %}
+    <div class="progress-bar large {% if pct < 20 %}progress-low{% elif pct < 50 %}progress-mid{% else %}progress-high{% endif %}">
+      <div class="progress-fill" style="width:{{ pct }}%"></div>
+    </div>
+    <p class="detail-remaining">{{ pct }}% remaining <span class="muted">({{ spool.remaining_g | round }}g)</span></p>
     {% else %}
-    <p>No weight logged yet.</p>
+    <p class="muted">No weight logged yet.</p>
     {% endif %}
-    {% if spool.product_url %}<p><a href="{{ spool.product_url }}" target="_blank" rel="noopener">Product link</a></p>{% endif %}
-    {% if spool.purchase_date %}<p>Purchased: {{ spool.purchase_date }}</p>{% endif %}
-    {% if spool.notes %}<p>Notes: {{ spool.notes }}</p>{% endif %}
+    <dl class="detail-meta">
+      {% if links | length > 0 %}
+      <dt>{% if links | length > 1 %}Products{% else %}Product{% endif %}</dt>
+      <dd>
+        {% for link in links %}
+        <div><a href="{{ link.url }}" target="_blank" rel="noopener" class="product-link" title="{{ link.url }}">{{ link.url | truncate(length=45) }} &#8599;</a></div>
+        {% endfor %}
+      </dd>
+      {% endif %}
+      {% if spool.purchase_date %}<dt>Purchased</dt><dd>{{ spool.purchase_date }}</dd>{% endif %}
+      {% if spool.notes %}<dt>Notes</dt><dd>{{ spool.notes }}</dd>{% endif %}
+    </dl>
+    <div class="detail-edit-row">
+      <button class="btn btn-danger-ghost btn-sm" hx-delete="/spools/{{ spool.id }}" hx-confirm="Delete this spool? This cannot be undone.">Delete</button>
+      <a href="/spools/new?clone_from={{ spool.id }}" class="btn btn-secondary btn-sm">Clone</a>
+      <a href="/spools/{{ spool.id }}/edit" class="btn btn-secondary btn-sm">Edit</a>
+    </div>
   </div>
 </div>
 
-<form hx-post="/spools/{{ spool.id }}/weigh" hx-target="#spool-detail" hx-swap="innerHTML" class="weigh-form">
+<form hx-post="/spools/{{ spool.id }}/weigh" hx-target="#spool-detail" hx-swap="innerHTML" class="weigh-form card">
   <label>New gross weight (g) &mdash; spool + remaining filament, from your scale
     <input type="number" step="any" name="gross_weight_g" required>
   </label>
-  <button type="submit">Log weight</button>
+  <button type="submit" class="btn btn-primary">Log weight</button>
 </form>
 
 <h2>Weight history</h2>
+<div class="table-card">
 <table class="reference-table">
   <thead>
     <tr><th>Date</th><th>Gross (g)</th><th>Remaining (g)</th></tr>
@@ -46,3 +64,4 @@
     {% endif %}
   </tbody>
 </table>
+</div>

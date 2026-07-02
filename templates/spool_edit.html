@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<p class="back-link"><a href="/spools/{{ spool.id }}">&larr; Back to spool</a></p>
+<div class="page-header">
+  <h1>Edit Spool</h1>
+</div>
+
+<form method="post" action="/spools/{{ spool.id }}/edit" class="wizard-form">
+
+  <fieldset class="wizard-step card">
+    <legend>Brand</legend>
+    <select name="brand_id" required>
+      {% for b in brands %}<option value="{{ b.id }}" {% if b.id == spool.brand_id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}
+    </select>
+  </fieldset>
+
+  <fieldset class="wizard-step card">
+    <legend>Material</legend>
+    <select name="material_id" required>
+      {% for m in materials %}<option value="{{ m.id }}" {% if m.id == spool.material_id %}selected{% endif %}>{{ m.name }}</option>{% endfor %}
+    </select>
+  </fieldset>
+
+  <fieldset class="wizard-step card colour-picker">
+    <legend>Colour</legend>
+    <div class="colour-options">
+    {% for c in colours %}
+    <label class="colour-option">
+      <input type="radio" name="colour_id" value="{{ c.id }}" {% if c.id == spool.colour_id %}checked{% endif %} required>
+      <span class="swatch" style="background:{{ c.hex | default(value='#ccc') }}"></span>
+      {{ c.name }}
+    </label>
+    {% endfor %}
+    </div>
+  </fieldset>
+
+  <fieldset class="wizard-step card">
+    <legend>Nominal weight</legend>
+    <label>Nominal weight (g)
+      <input type="number" step="any" name="nominal_weight_g" value="{{ spool.nominal_weight_g }}" required>
+    </label>
+    <p class="field-hint">The filament's labeled weight only (e.g. 1000g) &mdash; not including the empty spool. To change the empty-spool weight, edit the brand's tare weight on the <a href="/brands">Brands tab</a> instead.</p>
+  </fieldset>
+
+  <fieldset class="wizard-step card">
+    <legend>Product links + notes</legend>
+    <div id="product-url-fields" class="url-fields">
+      {% for link in links %}
+      <input type="url" name="product_url" value="{{ link.url }}" placeholder="https://&hellip;">
+      {% endfor %}
+      {% if links | length == 0 %}
+      <input type="url" name="product_url" placeholder="https://&hellip;">
+      {% endif %}
+    </div>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="addProductUrlField()">+ Add another link</button>
+    <label>Purchase date <input type="date" name="purchase_date" value="{{ spool.purchase_date | default(value='') }}"></label>
+    <label>Notes <textarea name="notes" rows="3">{{ spool.notes | default(value='') }}</textarea></label>
+  </fieldset>
+
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary btn-lg">Save changes</button>
+    <a href="/spools/{{ spool.id }}" class="btn btn-ghost btn-lg">Cancel</a>
+  </div>
+</form>
+{% endblock %}
