@@ -14,14 +14,14 @@
   </td>
   {% endfor %}
   <td class="actions">
-    <button hx-get="/{{ entity }}/{{ item.id }}/edit" hx-target="#row-{{ item.id }}" hx-swap="outerHTML">Edit</button>
-    <button hx-delete="/{{ entity }}/{{ item.id }}" hx-target="#rows" hx-swap="innerHTML" hx-confirm="Delete this entry?">Delete</button>
+    <button class="btn btn-ghost btn-sm" hx-get="/{{ entity }}/{{ item.id }}/edit" hx-target="#row-{{ item.id }}" hx-swap="outerHTML">Edit</button>
+    <button class="btn btn-danger-ghost btn-sm" hx-delete="/{{ entity }}/{{ item.id }}" hx-target="#rows" hx-swap="innerHTML" hx-confirm="Delete this entry?">Delete</button>
   </td>
 </tr>
 {% endmacro row_view %}
 
 {% macro row_edit(entity, item, columns) %}
-<tr id="row-{{ item.id }}">
+<tr id="row-{{ item.id }}" class="row-editing">
   <td colspan="{{ columns | length + 1 }}">
   <form hx-put="/{{ entity }}/{{ item.id }}" hx-target="#rows" hx-swap="innerHTML" class="inline-form">
   {% for col in columns %}
@@ -33,15 +33,15 @@
     <input type="text" name="{{ col.key }}" value="{{ item[col.key] | default(value='') }}" placeholder="{{ col.label }}" {% if col.required %}required{% endif %}>
     {% endif %}
   {% endfor %}
-    <button type="submit">Save</button>
-    <button type="button" hx-get="/{{ entity }}/{{ item.id }}/view" hx-target="#row-{{ item.id }}" hx-swap="outerHTML">Cancel</button>
+    <button type="submit" class="btn btn-primary btn-sm">Save</button>
+    <button type="button" class="btn btn-ghost btn-sm" hx-get="/{{ entity }}/{{ item.id }}/view" hx-target="#row-{{ item.id }}" hx-swap="outerHTML">Cancel</button>
   </form>
   </td>
 </tr>
 {% endmacro row_edit %}
 
 {% macro add_form(entity, singular, columns) %}
-<form hx-post="/{{ entity }}" hx-target="#rows" hx-swap="innerHTML" hx-on::after-request="if(event.detail.successful) this.reset()" class="add-form">
+<form hx-post="/{{ entity }}" hx-target="#rows" hx-swap="innerHTML" hx-on::after-request="if(event.detail.successful) this.reset()" class="add-form card">
 {% for col in columns %}
   {% if col.input_type == "color" %}
   <label>{{ col.label }} <input type="color" name="{{ col.key }}" value="#000000"></label>
@@ -51,6 +51,6 @@
   <label>{{ col.label }} <input type="text" name="{{ col.key }}" {% if col.required %}required{% endif %}></label>
   {% endif %}
 {% endfor %}
-  <button type="submit">Add {{ singular }}</button>
+  <button type="submit" class="btn btn-primary">+ Add {{ singular }}</button>
 </form>
 {% endmacro add_form %}

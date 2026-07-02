@@ -1,10 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Filament Tracker — scaffold OK</h1>
-<ul>
-  <li>Brands: {{ brand_count }}</li>
-  <li>Materials: {{ material_count }}</li>
-  <li>Colours: {{ colour_count }}</li>
-  <li>Spools: {{ spool_count }}</li>
-</ul>
+<div class="page-header">
+  <h1>Welcome back</h1>
+  <p class="page-subtitle">Here's what's in your filament stash.</p>
+</div>
+
+<div class="stat-grid">
+  <a href="/spools" class="stat-card">
+    <span class="stat-value">{{ spool_count }}</span>
+    <span class="stat-label">Spools</span>
+  </a>
+  <a href="/brands" class="stat-card">
+    <span class="stat-value">{{ brand_count }}</span>
+    <span class="stat-label">Brands</span>
+  </a>
+  <a href="/materials" class="stat-card">
+    <span class="stat-value">{{ material_count }}</span>
+    <span class="stat-label">Materials</span>
+  </a>
+  <a href="/colours" class="stat-card">
+    <span class="stat-value">{{ colour_count }}</span>
+    <span class="stat-label">Colours</span>
+  </a>
+</div>
+
+<div class="home-actions">
+  <a href="/spools" class="btn btn-primary">View all spools</a>
+  <a href="/spools/new" class="btn btn-secondary">+ Add a spool</a>
+</div>
+
+{% if brand_count == 0 or material_count == 0 or colour_count == 0 %}
+<div class="notice notice-info">
+  <p><strong>Get started:</strong> add at least one brand, material, and colour before you can add your first spool.</p>
+  <p class="notice-links">
+    {% if brand_count == 0 %}<a href="/brands">Add a brand</a>{% endif %}
+    {% if material_count == 0 %}<a href="/materials">Add a material</a>{% endif %}
+    {% if colour_count == 0 %}<a href="/colours">Add a colour</a>{% endif %}
+  </p>
+</div>
+{% endif %}
 {% endblock %}

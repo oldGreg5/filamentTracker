@@ -1,10 +1,10 @@
 {% macro sort_link(key, label, sort, dir, brand, material, colour) %}
 {% set qs = "brand=" ~ brand ~ "&material=" ~ material ~ "&colour=" ~ colour ~ "&sort=" ~ key ~ "&dir=" %}
 {% if sort == key and dir == "asc" %}
-<a class="sort-link" href="/spools?{{ qs }}desc" hx-get="/spools?{{ qs }}desc" hx-target="#spool-rows" hx-swap="innerHTML" hx-push-url="true">{{ label }} &#9650;</a>
+<a class="sort-link" href="/spools?{{ qs }}desc" hx-get="/spools?{{ qs }}desc" hx-target="#spool-table" hx-swap="outerHTML" hx-push-url="true">{{ label }} &#9650;</a>
 {% elif sort == key %}
-<a class="sort-link" href="/spools?{{ qs }}asc" hx-get="/spools?{{ qs }}asc" hx-target="#spool-rows" hx-swap="innerHTML" hx-push-url="true">{{ label }} &#9660;</a>
+<a class="sort-link" href="/spools?{{ qs }}asc" hx-get="/spools?{{ qs }}asc" hx-target="#spool-table" hx-swap="outerHTML" hx-push-url="true">{{ label }} &#9660;</a>
 {% else %}
-<a class="sort-link" href="/spools?{{ qs }}asc" hx-get="/spools?{{ qs }}asc" hx-target="#spool-rows" hx-swap="innerHTML" hx-push-url="true">{{ label }}</a>
+<a class="sort-link" href="/spools?{{ qs }}asc" hx-get="/spools?{{ qs }}asc" hx-target="#spool-table" hx-swap="outerHTML" hx-push-url="true">{{ label }}</a>
 {% endif %}
 {% endmacro sort_link %}

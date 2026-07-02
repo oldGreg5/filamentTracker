@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% import "partials/spool_macros.html" as sm %}
 {% block content %}
-<h1>Spools</h1>
+<div class="page-header">
+  <h1>Spools</h1>
+  <a href="/spools/new" class="btn btn-primary">+ Add Spool</a>
+</div>
 
-<form id="spool-filters" hx-get="/spools" hx-target="#spool-rows" hx-swap="innerHTML" hx-push-url="true" hx-trigger="change" hx-include="this">
+<form id="spool-filters" class="filter-bar card" hx-get="/spools" hx-target="#spool-table" hx-swap="outerHTML" hx-push-url="true" hx-trigger="change" hx-include="this">
   <input type="hidden" name="sort" value="{{ sort }}">
   <input type="hidden" name="dir" value="{{ dir }}">
   <label>Brand
@@ -26,20 +29,7 @@
   </label>
 </form>
 
-<table class="reference-table spool-table">
-  <thead>
-    <tr>
-      <th class="thumb-cell"></th>
-      <th>{{ sm::sort_link(key="brand", label="Brand", sort=sort, dir=dir, brand=filter_brand_str, material=filter_material_str, colour=filter_colour_str) }}</th>
-      <th>{{ sm::sort_link(key="material", label="Material", sort=sort, dir=dir, brand=filter_brand_str, material=filter_material_str, colour=filter_colour_str) }}</th>
-      <th>{{ sm::sort_link(key="colour", label="Colour", sort=sort, dir=dir, brand=filter_brand_str, material=filter_material_str, colour=filter_colour_str) }}</th>
-      <th>{{ sm::sort_link(key="percent", label="Remaining %", sort=sort, dir=dir, brand=filter_brand_str, material=filter_material_str, colour=filter_colour_str) }}</th>
-      <th>{{ sm::sort_link(key="remaining_g", label="Remaining (g)", sort=sort, dir=dir, brand=filter_brand_str, material=filter_material_str, colour=filter_colour_str) }}</th>
-      <th>{{ sm::sort_link(key="purchase_date", label="Purchased", sort=sort, dir=dir, brand=filter_brand_str, material=filter_material_str, colour=filter_colour_str) }}</th>
-    </tr>
-  </thead>
-  <tbody id="spool-rows">
-    {% include "partials/spool_rows.html" %}
-  </tbody>
-</table>
+<div class="table-card">
+{% include "partials/spool_table.html" %}
+</div>
 {% endblock %}
