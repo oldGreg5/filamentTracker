@@ -6,30 +6,7 @@
   <a href="/spools/new" class="btn btn-primary">+ Add Spool</a>
 </div>
 
-<form id="spool-filters" class="filter-bar card" hx-get="/spools" hx-target="#spool-table" hx-swap="outerHTML" hx-push-url="true" hx-trigger="change" hx-include="this">
-  <input type="hidden" name="sort" value="{{ sort }}">
-  <input type="hidden" name="dir" value="{{ dir }}">
-  <label>Brand
-    <select name="brand">
-      <option value="">All</option>
-      {% for b in brands %}<option value="{{ b.id }}" {% if filter_brand == b.id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}
-    </select>
-  </label>
-  <label>Material
-    <select name="material">
-      <option value="">All</option>
-      {% for m in materials %}<option value="{{ m.id }}" {% if filter_material == m.id %}selected{% endif %}>{{ m.name }}</option>{% endfor %}
-    </select>
-  </label>
-  <label>Colour
-    <select name="colour">
-      <option value="">All</option>
-      {% for c in colours %}<option value="{{ c.id }}" {% if filter_colour == c.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
-    </select>
-  </label>
-</form>
-
-<div class="table-card">
-{% include "partials/spool_table.html" %}
+<div id="spool-panel">
+{% include "partials/spool_panel.html" %}
 </div>
 {% endblock %}

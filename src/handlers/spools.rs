@@ -115,7 +115,10 @@ pub async fn list(
     let spools = query.fetch_all(&state.pool).await?;
 
     let dir_lower = if dir == "DESC" { "desc" } else { "asc" };
+    let (brands, materials, colours) = fetch_reference_options(&state.pool).await?;
+
     let mut ctx = Context::new();
+    ctx.insert("visible_count", &spools.len());
     ctx.insert("spools", &spools);
     ctx.insert("sort", sort);
     ctx.insert("dir", dir_lower);
@@ -125,20 +128,19 @@ pub async fn list(
     ctx.insert("filter_brand_str", &filter_brand.map(|v| v.to_string()).unwrap_or_default());
     ctx.insert("filter_material_str", &filter_material.map(|v| v.to_string()).unwrap_or_default());
     ctx.insert("filter_colour_str", &filter_colour.map(|v| v.to_string()).unwrap_or_default());
+    ctx.insert("brands", &brands);
+    ctx.insert("materials", &materials);
+    ctx.insert("colours", &colours);
 
     let is_htmx = headers.get("HX-Request").map(|v| v == "true").unwrap_or(false);
 
     if is_htmx {
-        // Re-render the whole table (thead + tbody), not just the rows, so the
-        // sort-arrow indicators and toggle links in the header stay in sync too.
-        let body = state.render("partials/spool_table.html", &ctx).await?;
+        // Re-render the whole panel (filter form + count + table), not just the
+        // rows, so the sort/filter state and the spool count all stay in sync.
+        let body = state.render("partials/spool_panel.html", &ctx).await?;
         return Ok(Html(body));
     }
 
-    let (brands, materials, colours) = fetch_reference_options(&state.pool).await?;
-    ctx.insert("brands", &brands);
-    ctx.insert("materials", &materials);
-    ctx.insert("colours", &colours);
     ctx.insert("active_nav", "spools");
 
     let body = state.render("spool_list.html", &ctx).await?;
