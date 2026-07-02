@@ -3,5 +3,5 @@
 <tr class="row-error"><td colspan="{{ columns | length + 1 }}">{{ error }}</td></tr>
 {% endif %}
 {% for item in items %}
-{{ ref::row_view(entity=entity, item=item, columns=columns) }}
+{{ ref::row_view(entity=entity, item=item, columns=columns, filter_param=filter_param) }}
 {% endfor %}

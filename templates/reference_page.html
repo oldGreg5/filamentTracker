@@ -14,7 +14,7 @@
   </thead>
   <tbody id="rows">
     {% for item in items %}
-    {{ ref::row_view(entity=entity, item=item, columns=columns) }}
+    {{ ref::row_view(entity=entity, item=item, columns=columns, filter_param=filter_param) }}
     {% endfor %}
     {% if items | length == 0 %}
     <tr><td colspan="{{ columns | length + 1 }}" class="empty-row">No {{ title | lower }} yet — add one above.</td></tr>
