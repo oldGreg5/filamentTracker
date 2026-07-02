@@ -12,6 +12,10 @@ pub struct AppState {
     pub pool: SqlitePool,
     pub tera: Arc<RwLock<Tera>>,
     pub image_dir: PathBuf,
+    /// Changes every process start, so static asset URLs (?v=...) become new
+    /// URLs on every deploy — otherwise Cloudflare/browser caches keep serving
+    /// the old /static/app.js and /static/style.css indefinitely.
+    pub asset_version: String,
 }
 
 impl AppState {
@@ -25,7 +29,9 @@ impl AppState {
                 .full_reload()
                 .map_err(anyhow::Error::from)?;
         }
-        let rendered = self.tera.read().await.render(name, ctx).map_err(anyhow::Error::from)?;
+        let mut ctx = ctx.clone();
+        ctx.insert("asset_v", &self.asset_version);
+        let rendered = self.tera.read().await.render(name, &ctx).map_err(anyhow::Error::from)?;
         Ok(rendered)
     }
 }

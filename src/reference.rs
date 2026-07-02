@@ -72,6 +72,7 @@ pub async fn page(state: AppState, config: &ReferenceConfig) -> Result<impl Into
     let mut ctx = base_context(config);
     ctx.insert("title", config.title);
     ctx.insert("items", &items);
+    ctx.insert("active_nav", config.entity);
     let body = state.render("reference_page.html", &ctx).await?;
     Ok(Html(body))
 }

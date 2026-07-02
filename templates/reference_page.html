@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% import "partials/reference_macros.html" as ref %}
 {% block content %}
-<h1>{{ title }}</h1>
+<div class="page-header">
+  <h1>{{ title }}</h1>
+</div>
 
 {{ ref::add_form(entity=entity, singular=singular, columns=columns) }}
 
+<div class="table-card">
 <table class="reference-table">
   <thead>
     <tr>{{ ref::columns_head(columns=columns) }}</tr>
@@ -13,6 +16,10 @@
     {% for item in items %}
     {{ ref::row_view(entity=entity, item=item, columns=columns) }}
     {% endfor %}
+    {% if items | length == 0 %}
+    <tr><td colspan="{{ columns | length + 1 }}" class="empty-row">No {{ title | lower }} yet — add one above.</td></tr>
+    {% endif %}
   </tbody>
 </table>
+</div>
 {% endblock %}

@@ -1,54 +1,62 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Add Spool</h1>
+<div class="page-header">
+  <h1>{% if clone %}Clone Spool{% else %}Add Spool{% endif %}</h1>
+  <p class="page-subtitle">{% if clone %}Fields are pre-filled from the spool you're cloning — adjust anything before saving.{% else %}Log a new spool in a few steps.{% endif %}</p>
+</div>
 
 {% if brands | length == 0 or materials | length == 0 or colours | length == 0 %}
-<p class="empty-notice">
-  Before adding a spool you need at least one entry in each reference list:
-</p>
-<ul>
-  {% if brands | length == 0 %}<li>No brands yet — <a href="/brands">add one on the Brands tab</a>.</li>{% endif %}
-  {% if materials | length == 0 %}<li>No materials yet — <a href="/materials">add one on the Materials tab</a>.</li>{% endif %}
-  {% if colours | length == 0 %}<li>No colours yet — <a href="/colours">add one on the Colours tab</a>.</li>{% endif %}
-</ul>
+<div class="notice notice-info">
+  <p><strong>Before adding a spool</strong> you need at least one entry in each reference list:</p>
+  <ul>
+    {% if brands | length == 0 %}<li>No brands yet — <a href="/brands">add one on the Brands tab</a>.</li>{% endif %}
+    {% if materials | length == 0 %}<li>No materials yet — <a href="/materials">add one on the Materials tab</a>.</li>{% endif %}
+    {% if colours | length == 0 %}<li>No colours yet — <a href="/colours">add one on the Colours tab</a>.</li>{% endif %}
+  </ul>
+</div>
 {% else %}
 <form method="post" action="/spools" enctype="multipart/form-data" class="wizard-form">
 
-  <fieldset>
-    <legend>1. Brand</legend>
+  <fieldset class="wizard-step card">
+    <legend>Brand</legend>
     <select name="brand_id" required>
-      <option value="" disabled selected>Select a brand&hellip;</option>
-      {% for b in brands %}<option value="{{ b.id }}">{{ b.name }}</option>{% endfor %}
+      {% if not clone %}<option value="" disabled selected>Select a brand&hellip;</option>{% endif %}
+      {% for b in brands %}<option value="{{ b.id }}" {% if clone and b.id == clone.brand_id %}selected{% endif %}>{{ b.name }}</option>{% endfor %}
     </select>
   </fieldset>
 
-  <fieldset>
-    <legend>2. Material</legend>
+  <fieldset class="wizard-step card">
+    <legend>Material</legend>
     <select name="material_id" required>
-      <option value="" disabled selected>Select a material&hellip;</option>
-      {% for m in materials %}<option value="{{ m.id }}">{{ m.name }}</option>{% endfor %}
+      {% if not clone %}<option value="" disabled selected>Select a material&hellip;</option>{% endif %}
+      {% for m in materials %}<option value="{{ m.id }}" {% if clone and m.id == clone.material_id %}selected{% endif %}>{{ m.name }}</option>{% endfor %}
     </select>
   </fieldset>
 
-  <fieldset class="colour-picker">
-    <legend>3. Colour</legend>
+  <fieldset class="wizard-step card colour-picker">
+    <legend>Colour</legend>
+    <div class="colour-options">
     {% for c in colours %}
     <label class="colour-option">
-      <input type="radio" name="colour_id" value="{{ c.id }}" required>
+      <input type="radio" name="colour_id" value="{{ c.id }}" {% if clone and c.id == clone.colour_id %}checked{% endif %} required>
       <span class="swatch" style="background:{{ c.hex | default(value='#ccc') }}"></span>
       {{ c.name }}
     </label>
     {% endfor %}
+    </div>
   </fieldset>
 
-  <fieldset class="weight-toggle">
-    <legend>4. Weight</legend>
-    <label><input type="radio" name="weight_mode" value="new" checked> Brand new / unopened</label>
-    <label><input type="radio" name="weight_mode" value="opened"> Already opened</label>
+  <fieldset class="wizard-step card weight-toggle">
+    <legend>Weight</legend>
+    <div class="weight-mode-options">
+      <label class="radio-pill"><input type="radio" name="weight_mode" value="new" checked> Brand new / unopened</label>
+      <label class="radio-pill"><input type="radio" name="weight_mode" value="opened"> Already opened</label>
+    </div>
 
     <label>Nominal weight (g)
-      <input type="number" step="any" name="nominal_weight_g" value="1000" required>
+      <input type="number" step="any" name="nominal_weight_g" value="{% if clone %}{{ clone.nominal_weight_g }}{% else %}1000{% endif %}" required>
     </label>
+    <p class="field-hint">The filament's labeled weight only (e.g. 1000g) &mdash; not including the empty spool. The spool's own weight comes from the brand's tare weight, set on the <a href="/brands">Brands tab</a>.</p>
 
     <div class="opened-only">
       <label>Current gross weight (g) — spool + remaining filament, from your scale
@@ -57,19 +65,28 @@
     </div>
   </fieldset>
 
-  <fieldset>
-    <legend>5. Pictures</legend>
+  <fieldset class="wizard-step card">
+    <legend>Pictures</legend>
     <input type="file" name="images" accept="image/*" capture="environment" multiple>
   </fieldset>
 
-  <fieldset>
-    <legend>6. Product link + notes</legend>
-    <label>Product URL <input type="url" name="product_url"></label>
-    <label>Purchase date <input type="date" name="purchase_date"></label>
-    <label>Notes <textarea name="notes"></textarea></label>
+  <fieldset class="wizard-step card">
+    <legend>Product links + notes</legend>
+    <div id="product-url-fields" class="url-fields">
+      {% if clone_links %}
+      {% for link in clone_links %}
+      <input type="url" name="product_url" value="{{ link.url }}" placeholder="https://&hellip;">
+      {% endfor %}
+      {% else %}
+      <input type="url" name="product_url" placeholder="https://&hellip;">
+      {% endif %}
+    </div>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="addProductUrlField()">+ Add another link</button>
+    <label>Purchase date <input type="date" name="purchase_date" value="{% if clone %}{{ clone.purchase_date | default(value='') }}{% endif %}"></label>
+    <label>Notes <textarea name="notes" rows="3">{% if clone %}{{ clone.notes | default(value='') }}{% endif %}</textarea></label>
   </fieldset>
 
-  <button type="submit">Add Spool</button>
+  <button type="submit" class="btn btn-primary btn-lg">Add Spool</button>
 </form>
 {% endif %}
 {% endblock %}

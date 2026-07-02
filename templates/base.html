@@ -4,19 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Filament Tracker</title>
+  <link rel="icon" href="/static/main-icon.png?v={{ asset_v }}">
   <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js?v={{ asset_v }}" defer></script>
+  <link rel="stylesheet" href="/static/style.css?v={{ asset_v }}">
 </head>
 <body>
-  <nav class="tabs">
-    <a href="/spools">Spools</a>
-    <a href="/spools/new">Add Spool</a>
-    <a href="/brands">Brands</a>
-    <a href="/materials">Materials</a>
-    <a href="/colours">Colours</a>
-  </nav>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="/" class="brand">
+        <img src="/static/main-icon.png?v={{ asset_v }}" alt="" class="brand-mark">
+        <span class="brand-name">Filament Tracker</span>
+      </a>
+      <nav class="tabs">
+        <a href="/spools" class="{% if active_nav == "spools" %}active{% endif %}">Spools</a>
+        <a href="/spools/new" class="{% if active_nav == "spool-new" %}active{% endif %}">Add Spool</a>
+        <a href="/brands" class="{% if active_nav == "brands" %}active{% endif %}">Brands</a>
+        <a href="/materials" class="{% if active_nav == "materials" %}active{% endif %}">Materials</a>
+        <a href="/colours" class="{% if active_nav == "colours" %}active{% endif %}">Colours</a>
+      </nav>
+    </div>
+  </header>
   <main>
-    {% block content %}{% endblock %}
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
   </main>
+  <div id="lightbox" class="lightbox" hidden>
+    <button type="button" class="lightbox-close" aria-label="Close">&times;</button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
 </body>
 </html>
