@@ -19,6 +19,7 @@ It's a self-hosted inventory tracker for 3D printing filament. Instead of diggin
 - **Edit or delete** any spool later if you got something wrong or used it up.
 
 Works just as well on your phone as on a desktop — the whole UI is mobile-optimized, so you can pull it up and weigh a spool standing at the printer.
+Cool thing is (at least on Adroid for sure) that adding picture opens camera app and you can take a photo of the spool and it will be attached just like that! 
 
 ## Running it
 
