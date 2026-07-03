@@ -15,6 +15,42 @@
   --radius-sm: 7px;
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
   --shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --swatch-border: rgba(0, 0, 0, 0.15);
+  --notice-info-border: #c7d2fe;
+  --notice-info-text: #3730a3;
+  --danger-ghost-hover-border: #fecaca;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-border: #334155;
+  --color-text: #e2e8f0;
+  --color-text-muted: #94a3b8;
+  --color-primary: #818cf8;
+  --color-primary-hover: #a5b4fc;
+  --color-primary-light: rgba(129, 140, 248, 0.18);
+  --color-danger: #f87171;
+  --color-danger-light: rgba(248, 113, 113, 0.15);
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --swatch-border: rgba(255, 255, 255, 0.3);
+  --notice-info-border: rgba(129, 140, 248, 0.35);
+  --notice-info-text: #c7d2fe;
+  --danger-ghost-hover-border: rgba(248, 113, 113, 0.4);
+}
+
+body,
+.site-header,
+.card,
+.table-card,
+.btn,
+select,
+input,
+textarea {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 * {
@@ -75,6 +111,12 @@ a {
   gap: 12px;
 }
 
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -90,6 +132,31 @@ a {
   height: 30px;
   border-radius: 8px;
   object-fit: cover;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.theme-toggle-icon {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .tabs {
@@ -222,8 +289,8 @@ a {
 
 .notice-info {
   background: var(--color-primary-light);
-  border: 1px solid #c7d2fe;
-  color: #3730a3;
+  border: 1px solid var(--notice-info-border);
+  color: var(--notice-info-text);
 }
 
 .notice p {
@@ -308,7 +375,7 @@ a {
 
 .btn-danger-ghost:hover {
   background: var(--color-danger-light);
-  border-color: #fecaca;
+  border-color: var(--danger-ghost-hover-border);
 }
 
 .btn-sm {
@@ -527,7 +594,7 @@ label {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--swatch-border);
   vertical-align: middle;
 }
 
