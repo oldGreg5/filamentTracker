@@ -2,3 +2,4 @@
 /data
 .env
 deploy.sh
+.DS_Store
