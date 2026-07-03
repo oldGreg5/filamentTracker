@@ -58,3 +58,27 @@ function initLightbox() {
 }
 
 document.addEventListener('DOMContentLoaded', initLightbox);
+
+// Light/dark theme toggle. The active theme is applied early (see the inline
+// script in <head>) to avoid a flash of the wrong theme on page load; this
+// just wires up the button and persists the choice.
+function initThemeToggle() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  const icon = btn.querySelector('.theme-toggle-icon');
+
+  function setIcon(theme) {
+    icon.textContent = theme === 'dark' ? '🌙' : '☀️';
+  }
+
+  setIcon(document.documentElement.getAttribute('data-theme') || 'light');
+
+  btn.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    setIcon(next);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initThemeToggle);
