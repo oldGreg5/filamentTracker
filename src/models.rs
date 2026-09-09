@@ -32,4 +32,10 @@ pub struct SpoolWithDetails {
     pub remaining_g: Option<f64>,
     pub percent_remaining: Option<f64>,
     pub thumbnail_path: Option<String>,
+    /// Timestamp of the most recent weight log entry, or None if the spool has never
+    /// been weighed. Used instead of `remaining_g`/`percent_remaining` to detect
+    /// "no weight logged" in templates, since a fully-used spool legitimately has
+    /// remaining_g == 0 / percent_remaining == 0.0, which would otherwise be
+    /// indistinguishable from "never weighed" under a truthiness check.
+    pub last_weighed_at: Option<String>,
 }

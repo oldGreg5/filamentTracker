@@ -9,7 +9,7 @@
   <div class="detail-stats card">
     <p class="detail-colour"><span class="swatch" style="background:{{ spool.colour_hex | default(value='#ccc') }}"></span> {{ spool.colour_name }}</p>
     <p class="detail-nominal">Nominal weight: <strong>{{ spool.nominal_weight_g }}g</strong> <span class="muted">({{ spool.tare_weight_g | round }}g empty spool)</span></p>
-    {% if spool.percent_remaining %}
+    {% if spool.last_weighed_at %}
     {% set pct = (spool.percent_remaining * 100) | round %}
     <div class="progress-bar large {% if pct < 20 %}progress-low{% elif pct < 50 %}progress-mid{% else %}progress-high{% endif %}">
       <div class="progress-fill" style="width:{{ pct }}%"></div>

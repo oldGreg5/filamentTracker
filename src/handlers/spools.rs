@@ -23,7 +23,8 @@ SELECT s.id,
        s.purchase_date,
        wl.gross_weight_g - COALESCE(s.tare_override_g, b.tare_weight_g) AS remaining_g,
        (wl.gross_weight_g - COALESCE(s.tare_override_g, b.tare_weight_g)) / s.nominal_weight_g AS percent_remaining,
-       si.path AS thumbnail_path
+       si.path AS thumbnail_path,
+       wl.measured_at AS last_weighed_at
 FROM spools s
 JOIN brands b ON b.id = s.brand_id
 JOIN materials m ON m.id = s.material_id
