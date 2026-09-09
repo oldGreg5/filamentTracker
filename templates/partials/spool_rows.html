@@ -13,7 +13,7 @@
   <td data-label="Material">{{ s.material_name }}</td>
   <td data-label="Colour"><span class="swatch" style="background:{{ s.colour_hex | default(value='#ccc') }}"></span> {{ s.colour_name }}</td>
   <td data-label="Remaining %">
-    {% if s.percent_remaining %}
+    {% if s.last_weighed_at %}
     {% set pct = (s.percent_remaining * 100) | round %}
     <div class="progress-bar {% if pct < 20 %}progress-low{% elif pct < 50 %}progress-mid{% else %}progress-high{% endif %}">
       <div class="progress-fill" style="width:{{ pct }}%"></div>
@@ -21,7 +21,7 @@
     {{ pct }}%
     {% else %}<span class="muted">—</span>{% endif %}
   </td>
-  <td data-label="Remaining (g)">{% if s.remaining_g %}{{ s.remaining_g | round }}g{% else %}<span class="muted">—</span>{% endif %}</td>
+  <td data-label="Remaining (g)">{% if s.last_weighed_at %}{{ s.remaining_g | round }}g{% else %}<span class="muted">—</span>{% endif %}</td>
   <td data-label="Purchased">{{ s.purchase_date | default(value="—") }}</td>
 </tr>
 {% endfor %}
