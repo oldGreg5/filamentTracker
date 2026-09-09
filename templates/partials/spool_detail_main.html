@@ -11,8 +11,9 @@
     <p class="detail-nominal">Nominal weight: <strong>{{ spool.nominal_weight_g }}g</strong> <span class="muted">({{ spool.tare_weight_g | round }}g empty spool)</span></p>
     {% if spool.last_weighed_at %}
     {% set pct = (spool.percent_remaining * 100) | round %}
+    {% if pct < 3 %}{% set bar_pct = 3 %}{% elif pct > 100 %}{% set bar_pct = 100 %}{% else %}{% set bar_pct = pct %}{% endif %}
     <div class="progress-bar large {% if pct < 20 %}progress-low{% elif pct < 50 %}progress-mid{% else %}progress-high{% endif %}">
-      <div class="progress-fill" style="width:{{ pct }}%"></div>
+      <div class="progress-fill" style="width:{{ bar_pct }}%"></div>
     </div>
     <p class="detail-remaining">{{ pct }}% remaining <span class="muted">({{ spool.remaining_g | round }}g)</span></p>
     {% else %}

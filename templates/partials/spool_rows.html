@@ -15,8 +15,9 @@
   <td data-label="Remaining %">
     {% if s.last_weighed_at %}
     {% set pct = (s.percent_remaining * 100) | round %}
+    {% if pct < 3 %}{% set bar_pct = 3 %}{% elif pct > 100 %}{% set bar_pct = 100 %}{% else %}{% set bar_pct = pct %}{% endif %}
     <div class="progress-bar {% if pct < 20 %}progress-low{% elif pct < 50 %}progress-mid{% else %}progress-high{% endif %}">
-      <div class="progress-fill" style="width:{{ pct }}%"></div>
+      <div class="progress-fill" style="width:{{ bar_pct }}%"></div>
     </div>
     {{ pct }}%
     {% else %}<span class="muted">—</span>{% endif %}
