@@ -28,6 +28,16 @@ Two ways to run it, same app either way:
 
 - **Locally**, for development: `cargo run` (needs Rust + SQLite; see `SPEC.md` for the full dev setup).
 - **Deployed with Docker**: `docker compose up --build` — single container, single image, no extra services needed.
+- **QNAP container station**: 
+    - **Build and push to docker hub:**
+`docker buildx build --platform linux/amd64 -t oldgreg5/`filament-tracker:latest --push .
+    - **Pull & run:**
+`docker stop filament-tracker && docker rm filament-tracker && docker rmi oldgreg5/filament-tracker && docker pull oldgreg5/filament-tracker:latest && docker run -d \
+  --name filament-tracker \
+  -p 8090:8080 \
+  -v /share/Container/shared_data/filament-tracker:/data \
+  --restart always \
+  oldgreg5/filament-tracker:latest`
 
 ## How to use it
 
